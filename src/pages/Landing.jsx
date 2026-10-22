@@ -95,14 +95,31 @@ function DesktopHero() {
 // crossfades to the next scene (photo + message), then the page carries on as normal.
 const SCENES = [
   { photo: 'pharmacy-shelves.jpg', pos: '62% 50%', alt: 'Farmacia dermatológica de Well Derma con repisas iluminadas de dermocosméticos' },
-  { photo: 'waiting-room.jpg', pos: '18% 50%', fade: 'top', alt: 'Sala de espera de Well Derma con el logotipo en latón y banca iluminada' },
+  { photo: 'waiting-room.jpg', pos: '30% 62%', fade: 'top', alt: 'Sala de espera de Well Derma con el logotipo en latón y banca iluminada' },
   { photo: 'consultory-room.jpg', pos: '58% 50%', alt: 'Consultorio de Well Derma' },
 ];
-const SCENE_AT = [0, 0.4, 0.8]; // where each scene sits along the pinned scroll (0–1)
+// Where each scene sits along the pinned scroll (0–1). The story is 3.5 screens tall, so 2.5 screens of travel:
+// one screen per scene, matching the snap points in the markup.
+const SCENE_AT = [0, 0.4, 0.8];
 
 function MobileHero() {
   const ref = useRef(null);
   const [scene, setScene] = useState(0);
+  const sceneRef = useRef(0);
+  const [mediaTop, setMediaTop] = useState(null);
+
+  // A top-fade scene's photo starts just under its text, however tall the text wraps on this screen.
+  useEffect(() => {
+    const el = ref.current;
+    const copy = el.querySelector('.story-copy[data-align="top"]');
+    if (!copy) return;
+    const fit = () => { const last = copy.lastElementChild; setMediaTop(last.offsetTop + last.offsetHeight); };
+    fit();
+    document.fonts?.ready.then(fit);
+    const ro = new ResizeObserver(fit);
+    ro.observe(copy);
+    return () => ro.disconnect();
+  }, []);
 
   // Pinned scroll distance and how far through it the visitor is (0–1).
   const measure = () => {
@@ -113,26 +130,65 @@ function MobileHero() {
 
   useEffect(() => {
     let frame = 0;
+    let pausedUntil = 0;
+    const root = document.documentElement;
     const update = () => {
       frame = 0;
       if (!ref.current) return;
       const { progress } = measure();
-      setScene(progress < 0.2 ? 0 : progress < 0.6 ? 1 : 2);
+      sceneRef.current = progress < 0.2 ? 0 : progress < 0.6 ? 1 : 2;
+      setScene(sceneRef.current);
+      // Mandatory snapping only while inside the story, so each swipe lands on the next scene;
+      // past the last snap point (where Tratamientos begins) the page scrolls freely again.
+      const el = ref.current;
+      const end = el.getBoundingClientRect().bottom - parseFloat(getComputedStyle(el.firstElementChild).top);
+      if (performance.now() > pausedUntil) root.classList.toggle('story-snapping', end > 1);
     };
+    // In-page links (menu, footer) jump past the story; pause snapping so it doesn't pull them back.
+    const onClick = (e) => {
+      const a = e.target.closest?.('a[href*="#"]');
+      if (!a || a.pathname !== location.pathname) return;
+      pausedUntil = performance.now() + 1500;
+      root.classList.remove('story-snapping');
+    };
+    document.addEventListener('click', onClick, true);
     const onScroll = () => { if (!frame) frame = requestAnimationFrame(update); };
     update();
     window.addEventListener('scroll', onScroll, { passive: true });
     window.addEventListener('resize', onScroll);
-    return () => { window.removeEventListener('scroll', onScroll); window.removeEventListener('resize', onScroll); cancelAnimationFrame(frame); };
+    return () => { window.removeEventListener('scroll', onScroll); window.removeEventListener('resize', onScroll); cancelAnimationFrame(frame); document.removeEventListener('click', onClick, true); root.classList.remove('story-snapping'); };
   }, []);
 
+  // Scroll to scene i; i === SCENES.length means the end of the story, where Tratamientos begins.
   const goTo = (i) => {
     const el = ref.current;
     const { travel } = measure();
     // The stage pins once the section's top reaches the header (the stage's sticky `top`).
     const pinAt = el.getBoundingClientRect().top + window.scrollY - parseFloat(getComputedStyle(el.firstElementChild).top);
-    window.scrollTo({ top: pinAt + SCENE_AT[i] * travel });
+    window.scrollTo({ top: pinAt + (i < SCENES.length ? SCENE_AT[i] * travel : el.offsetHeight) });
   };
+
+  // Touch screens: one swipe moves exactly one scene, however hard the flick. Swiping down on the first
+  // scene and every gesture outside the pinned stage scroll natively; two-finger gestures are left alone.
+  useEffect(() => {
+    const stage = ref.current.firstElementChild;
+    let startY = null;
+    let moved = false;
+    const onStart = (e) => { startY = e.touches.length === 1 ? e.touches[0].clientY : null; moved = false; };
+    const onMove = (e) => {
+      if (startY === null || e.touches.length !== 1) return;
+      const dy = startY - e.touches[0].clientY; // > 0: finger moves up, page should go down
+      const s = sceneRef.current;
+      if (dy < 0 && s === 0) return;
+      e.preventDefault();
+      if (moved || Math.abs(dy) < 24) return;
+      moved = true;
+      goTo(dy > 0 ? s + 1 : s - 1);
+    };
+    stage.addEventListener('touchstart', onStart, { passive: true });
+    stage.addEventListener('touchmove', onMove, { passive: false });
+    return () => { stage.removeEventListener('touchstart', onStart); stage.removeEventListener('touchmove', onMove); };
+  }, []);
   const state = (i) => (i === scene ? 'active' : i < scene ? 'past' : 'next');
   // Keyboard users tabbing into a hidden scene are scrolled to it.
   const copyProps = (i) => ({ className: 'story-copy', 'data-state': state(i), 'data-align': SCENES[i].fade, onFocusCapture: () => { if (i !== scene) goTo(i); } });
@@ -141,7 +197,7 @@ function MobileHero() {
     <section id="inicio" ref={ref} className="story" aria-label="Bienvenida">
       <div className="story-stage">
         {SCENES.map((sc, i) => (
-          <div key={sc.photo} className="story-media" data-state={state(i)} data-fade={sc.fade} aria-hidden={i !== scene}>
+          <div key={sc.photo} className="story-media" data-state={state(i)} data-fade={sc.fade} aria-hidden={i !== scene} style={sc.fade === 'top' && mediaTop ? { top: mediaTop - 24 } : undefined}>
             <img src={IMG + sc.photo} alt={sc.alt} fetchpriority={i ? undefined : 'high'} style={{ objectPosition: sc.pos }} />
           </div>
         ))}
@@ -167,6 +223,9 @@ function MobileHero() {
         </div>
         <p className="story-hint" data-hidden={scene > 0 || undefined} aria-hidden="true"><span>Desliza</span><Icon name="chevron-down" size={18} strokeWidth={1.6} /></p>
       </div>
+      {/* Snap points: one per scene, plus one where the story ends, so a flick stops at each step instead of skipping through. */}
+      {SCENES.map((_, i) => <span key={i} className="story-snap" aria-hidden="true" style={{ top: 'calc(var(--story-screen) * ' + i + ')' }} />)}
+      <span className="story-snap" aria-hidden="true" style={{ top: '100%' }} />
     </section>
   );
 }

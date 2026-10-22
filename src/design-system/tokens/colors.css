@@ -1,0 +1,40 @@
+:root{
+/* Brand — official logo colours (brand presentation, Mix&brand it, Mar 2026) */
+--wd-summit:#7a949d;          /* Summit · Pantone 3526 C · RGB 122-147-157 */
+--wd-summit-logo:#67949a;     /* exact fill used in the vector logo files */
+--wd-fresh-cream:#fcf9f1;     /* Fresh Cream · Pantone P 1-1 U · RGB 252-249-241 */
+/* Summit scale (derived) */
+--summit-50:#f1f4f5;--summit-100:#e3eaec;--summit-200:#c7d4d8;--summit-300:#a6b9bf;--summit-400:#7a949d;--summit-500:#66808a;--summit-600:#536a73;--summit-700:#42555d;--summit-800:#33434a;--summit-900:#243137;
+/* Warm neutrals — plaster walls, stone floor, cream (derived from facility photos) */
+--sand-50:#fcf9f1;--sand-100:#f6f1e7;--sand-200:#ece5d8;--sand-300:#ddd3c3;--sand-400:#c4b8a5;--sand-500:#9c907e;--sand-600:#6f665a;
+--ink:#263034;--ink-soft:#4a565b;--white:#ffffff;
+/* Interior accents (from the clinic: brass signage, navy granite counter) */
+--wd-brass:#b39a63;--wd-brass-soft:#e6dbc2;--wd-navy:#2f4560;--wd-oak:#a98a6a;
+/* Semantic */
+--success:#4f7d63;--success-bg:#e7efe9;--warning:#9a7333;--warning-bg:#f5ecdb;--error:#a8493d;--error-bg:#f6e4e0;--info:var(--summit-600);--info-bg:var(--summit-50);
+
+/* Semantic aliases */
+--surface-page:var(--wd-fresh-cream);
+--surface-raised:var(--white);
+--surface-sunken:var(--sand-100);
+--surface-muted:var(--sand-200);
+--surface-brand:var(--wd-summit);
+--surface-brand-strong:var(--summit-700);
+--surface-inverse:var(--summit-900);
+--text-strong:var(--ink);
+--text-body:var(--ink-soft);
+--text-muted:var(--sand-600);
+--text-brand:var(--summit-600);
+--text-on-brand:var(--wd-fresh-cream);
+--text-accent:var(--wd-brass);
+--border-subtle:var(--sand-200);
+--border-default:var(--sand-300);
+--border-strong:var(--summit-300);
+--border-focus:var(--summit-500);
+--action-primary:var(--summit-600);
+--action-primary-hover:var(--summit-700);
+--action-primary-press:var(--summit-800);
+--action-secondary:var(--wd-fresh-cream);
+--action-secondary-hover:var(--sand-100);
+--link:var(--summit-600);--link-hover:var(--summit-800);
+}

@@ -1,0 +1,47 @@
+/* Doctoras: profile cards with an expandable detail panel. Shared rules live in site.css. */
+.doc-list{display:flex;flex-direction:column;gap:88px}
+.doc-name{font-size:clamp(44px,5vw,72px) !important}
+.doc-top{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,460px);gap:40px;align-items:center;min-height:500px}
+.doc-portrait{position:relative;height:460px}
+.doc-toggle:focus-visible{outline:3px solid rgba(199,212,216,.9);outline-offset:3px}
+.doc-chev{transition:transform .5s var(--ease-out),translate var(--dur-base) var(--ease-out)}
+.doc-toggle:hover .doc-chev{translate:0 2px}
+.btn-cream-flat:hover{background:var(--wd-fresh-cream) !important}
+.doc-panel{display:grid;transition:grid-template-rows .6s var(--ease-out)}
+.doc-panel-in{min-height:0;overflow:hidden}
+.doc-panel-body{padding:80px 0 64px;transition:opacity .45s var(--ease-out) .1s,transform .55s var(--ease-out) .05s}
+.doc-detail{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,380px) minmax(0,210px);gap:56px;align-items:center}
+.doc-detail-arch{height:500px}
+.doc-stats{display:flex;flex-direction:column;gap:26px}
+.doc-stats>div+div{border-top:1px solid var(--summit-200);padding-top:26px}
+
+.cta-box{padding:52px}
+.h-cta{font-size:clamp(32px,3.1vw,44px)}
+
+@media (prefers-reduced-motion:reduce){.doc-panel,.doc-panel-body,.doc-chev{transition:none}}
+@media (max-width:1100px){
+.doc-detail{grid-template-columns:minmax(0,1fr) minmax(0,340px)}
+.doc-stats{grid-column:1/-1;flex-direction:row;flex-wrap:wrap}
+.doc-stats>div{flex:1 1 160px}
+.doc-stats>div+div{border-top:0;padding-top:0}
+}
+@media (max-width:900px){
+.doc-top{grid-template-columns:minmax(0,1fr);min-height:0}
+.doc-portrait{height:380px;order:-1}
+/* The arch is taller than the stacked portrait box, so shrink it to stop it covering the name. */
+.doc-arch{width:236px !important;height:340px !important}
+.doc-disc{width:320px !important;height:320px !important}
+.doc-dot{display:none}
+.doc-detail{grid-template-columns:minmax(0,1fr);gap:40px}
+.doc-detail-arch{height:420px}
+.doc-stats>div{text-align:left !important}
+.doc-panel-body{padding:56px 0 48px}
+.cta-box{padding:36px 28px}
+}
+@media (max-width:640px){
+.doc-portrait{height:320px}
+.doc-arch{width:194px !important;height:280px !important}
+.doc-disc{width:260px !important;height:260px !important}
+.doc-detail-arch{height:360px}
+.doc-list{gap:72px}
+}

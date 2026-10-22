@@ -1,0 +1,88 @@
+/* Inicio: layout + responsive rules. Shared rules live in site.css. */
+/* Hero fills the first screen at any size or browser zoom: the headline and spacing scale with the
+   viewport's height as well as its width, so the buttons stay above the fold and nothing peeks below.
+   --h1 drives the headline, the swash and the handwritten note together. */
+.hero{position:relative;overflow:hidden;
+  --h1:clamp(48px,min(8.2vw,13vh),118px);
+  --hero-gap-s:clamp(12px,2.4vh,22px);--hero-gap-m:clamp(14px,3vh,28px);--hero-gap-l:clamp(18px,3.6vh,34px);--hero-gap-xl:clamp(18px,4.2vh,40px)}
+@supports (height:1svh){.hero{--h1:clamp(48px,min(8.2vw,13svh),118px);
+  --hero-gap-s:clamp(12px,2.4svh,22px);--hero-gap-m:clamp(14px,3svh,28px);--hero-gap-l:clamp(18px,3.6svh,34px);--hero-gap-xl:clamp(18px,4.2svh,40px)}}
+.hero-photo{position:absolute;top:0;right:0;width:66%;height:100%;object-fit:cover;object-position:30% 50%}
+.hero-scrim{position:absolute;inset:0;background:linear-gradient(90deg,var(--wd-fresh-cream) 0%,var(--wd-fresh-cream) 34%,rgba(252,249,241,.86) 44%,rgba(252,249,241,0) 64%)}
+.hero-grid{position:relative;display:grid;grid-template-columns:minmax(0,1fr);align-items:center;
+  min-height:max(560px,calc(100vh - var(--header-h)));padding-top:clamp(24px,5vh,56px);padding-bottom:clamp(24px,5vh,56px)}
+@supports (height:1svh){.hero-grid{min-height:max(560px,calc(100svh - var(--header-h)));padding-top:clamp(24px,5svh,56px);padding-bottom:clamp(24px,5svh,56px)}}
+.hero-h1{font-size:var(--h1)}
+.hero-swash{flex:none;width:.81em;height:.29em;margin-top:.15em;margin-left:.02em;transform:rotate(-14deg)}
+.hero-note{position:absolute;left:calc(var(--h1) * 3.98);top:8px;font-size:calc(var(--h1) * .254);transform:rotate(-12deg)}
+.hero-lead{margin:var(--hero-gap-m) 0 0;font-size:clamp(16px,2.1vh,19px)}
+@supports (height:1svh){.hero-lead{font-size:clamp(16px,2.1svh,19px)}}
+.hero-ghost{transition:background var(--dur-fast) var(--ease-out)}
+.hero-ghost:hover{background:var(--white) !important}
+.hero-ghost .chip{transition:transform var(--dur-base) var(--ease-out)}
+.hero-ghost:hover .chip{transform:translateX(3px)}
+
+/* Section headings and spacing scale smoothly between phone and desktop instead of jumping at breakpoints. */
+.sec-treatments{padding:clamp(64px,7.2vw,104px) 0 clamp(44px,5vw,72px)}
+.h-xl{font-size:clamp(40px,3.9vw,56px)}
+.h-l{font-size:clamp(34px,3.35vw,48px)}
+.svc-layout{display:grid;grid-template-columns:minmax(0,360px) minmax(0,1fr);gap:72px;align-items:start}
+.svc-intro{position:sticky;top:120px}
+.svc-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:48px;border-top:1px solid var(--sand-300)}
+.svc-ico{transition:transform var(--dur-slow) var(--ease-out)}
+.svc-row:hover .svc-ico{transform:scale(1.06) rotate(-4deg)}
+
+.split{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:20px}
+.split-card{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6fr)}
+.split-copy{padding:52px 44px}
+.split-media{min-height:420px;overflow:hidden}
+.split-media img{transition:transform .9s var(--ease-out)}
+.split-card:hover .split-media img{transform:scale(1.03)}
+.round-btn{transition:background var(--dur-fast) var(--ease-out)}
+.round-btn:hover{background:var(--sand-100) !important}
+.review-dot{width:24px;height:24px;padding:0;border:0;background:none;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.review-dot span{display:block;height:6px;border-radius:var(--radius-pill);transition:width var(--dur-base) var(--ease-out),background var(--dur-base) var(--ease-out)}
+.review-dot:hover span{background:var(--summit-500) !important}
+.motion .review-slide{animation:wd-fade var(--dur-slow) var(--ease-out) both}
+
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr))}
+.stat{display:flex;align-items:center;gap:18px;padding:30px 32px}
+.stat+.stat{border-left:1px solid var(--sand-200)}
+
+.visit{position:relative;overflow:hidden;display:grid;grid-template-columns:minmax(0,380px) minmax(0,1fr);gap:40px 56px;align-items:start;padding:56px 52px}
+.visit>*{position:relative;z-index:1}
+/* The clinic photo sits behind the hours and title only; it ends above the map row (map 420 + row gap 40 + padding 56). */
+.visit>.visit-bg{position:absolute;z-index:0;top:0;right:0;width:68%;bottom:516px;pointer-events:none}
+.visit>img.visit-bg{height:calc(100% - 516px);object-fit:cover;object-position:75% 55%}
+.visit-map{grid-column:1/-1;position:relative;height:420px;border-radius:var(--radius-lg);overflow:hidden;background:#e6ecee;border:1px solid var(--summit-200)}
+
+@media (max-width:1100px){
+.svc-layout{grid-template-columns:minmax(0,1fr);gap:40px}
+.svc-intro{position:static}
+.split{grid-template-columns:minmax(0,1fr)}
+}
+@media (max-width:900px){
+.visit{grid-template-columns:minmax(0,1fr);gap:32px;padding:40px 28px}
+.visit>.visit-bg{display:none}
+.visit-copy{order:-1}
+.visit-map{height:320px}
+.hero-photo{position:relative;width:100%;height:300px;display:block}
+.hero-scrim{display:none}
+.hero{--h1:clamp(46px,16vw,72px)}
+.hero-grid{min-height:0 !important;padding-top:40px !important;padding-bottom:56px !important}
+.hero-note{display:none}
+.split-card{grid-template-columns:minmax(0,1fr)}
+.split-media{min-height:0;height:280px;order:-1}
+.stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+.stat+.stat{border-left:0}
+.stat{border-top:1px solid var(--sand-200)}
+}
+@media (max-width:640px){
+.svc-list{grid-template-columns:minmax(0,1fr)}
+.svc-ico,.svc-ico img{width:72px !important;height:72px !important}
+.stats{grid-template-columns:minmax(0,1fr)}
+.stat{padding:22px 4px}
+.split-copy{padding:36px 24px}
+.visit{padding:32px 20px}
+.visit-map{height:300px}
+}

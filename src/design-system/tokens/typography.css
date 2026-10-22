@@ -1,0 +1,23 @@
+:root{
+--font-display:'Instrument Serif','Cormorant Garamond',Georgia,serif;
+--font-sans:'Raleway','Avenir Next','Helvetica Neue',sans-serif;
+--weight-light:300;/* @kind font */--weight-regular:400;/* @kind font */--weight-medium:500;/* @kind font */--weight-semibold:600;/* @kind font */
+/* Display (serif) */
+--fs-display-xl:88px;/* @kind font */--lh-display-xl:0.96;/* @kind font */
+--fs-display-l:64px;/* @kind font */--lh-display-l:1;/* @kind font */
+--fs-h1:52px;/* @kind font */--lh-h1:1.04;/* @kind font */
+--fs-h2:40px;/* @kind font */--lh-h2:1.08;/* @kind font */
+--fs-h3:30px;/* @kind font */--lh-h3:1.15;/* @kind font */
+--fs-h4:24px;/* @kind font */--lh-h4:1.2;/* @kind font */
+/* Text (sans) */
+--fs-body-l:18px;/* @kind font */--lh-body-l:1.65;/* @kind font */
+--fs-body:16px;/* @kind font */--lh-body:1.6;/* @kind font */
+--fs-small:14px;/* @kind font */--lh-small:1.5;/* @kind font */
+--fs-caption:12px;/* @kind font */--lh-caption:1.4;/* @kind font */
+--fs-eyebrow:12px;/* @kind font */--ls-eyebrow:0.2em;/* @kind font */
+--ls-display:-0.01em;/* @kind font */--ls-ui:0.02em;/* @kind font */
+/* Semantic aliases */
+--type-heading:var(--font-display);
+--type-body:var(--font-sans);
+--type-ui:var(--font-sans);
+}

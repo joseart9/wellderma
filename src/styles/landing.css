@@ -106,12 +106,14 @@ html.story-snapping{scroll-snap-type:y mandatory}
 .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
 .stat+.stat{border-left:0}
 .stat{border-top:1px solid var(--sand-200)}
+.stat:nth-child(-n+2){border-top:0}
 }
 @media (max-width:640px){
 .svc-list{grid-template-columns:minmax(0,1fr)}
 .svc-ico,.svc-ico img{width:72px !important;height:72px !important}
 .stats{grid-template-columns:minmax(0,1fr)}
 .stat{padding:22px 4px}
+.stat:nth-child(2){border-top:1px solid var(--sand-200)}
 .split-copy{padding:36px 24px}
 .visit{padding:32px 20px}
 .visit-map{height:300px}

@@ -121,7 +121,7 @@ function HelpButton() {
 }
 
 export function DoctorsPage() {
-  const [open, setOpen] = useState({ 0: true });
+  const [open, setOpen] = useState({});
   useReveal();
   return (
     <BookingProvider>

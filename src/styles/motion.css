@@ -10,6 +10,21 @@
 .motion [data-reveal="3"]{transition-delay:270ms}
 .motion [data-reveal="4"]{transition-delay:360ms}
 
+/* Desktop hero entrance: each block fades and rises on load, staggered by its data-intro step. */
+@keyframes wd-intro{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+.motion [data-intro]{animation:wd-intro var(--dur-reveal) var(--ease-out) both}
+.motion [data-intro="1"]{animation-delay:90ms}
+.motion [data-intro="2"]{animation-delay:180ms}
+.motion [data-intro="3"]{animation-delay:270ms}
+.motion [data-intro="4"]{animation-delay:360ms}
+
+/* Mobile hero story: scenes crossfade; the outgoing photo drifts up, the incoming one slides in from the left. */
+.motion .story-media{transition:opacity .9s var(--ease-out),transform 1.1s var(--ease-out)}
+.motion .story-copy{transition:opacity .5s var(--ease-out),transform .7s var(--ease-out)}
+.motion .story-copy[data-state="active"]{transition-delay:.18s}
+@keyframes wd-nudge{0%,100%{transform:none}50%{transform:translateY(4px)}}
+.motion .story-hint svg{animation:wd-nudge 2.4s var(--ease-in-out) infinite}
+
 /* Hero entrance: the photo settles in, the handwritten note fades in last and the swash draws itself. */
 @keyframes wd-settle{from{opacity:0;transform:scale(1.04)}to{opacity:1;transform:none}}
 @keyframes wd-fade{from{opacity:0}to{opacity:1}}

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Button, Icon } from '../design-system';
 import { Header } from '../shared/Header.jsx';
 import { Footer } from '../shared/Footer.jsx';
@@ -18,46 +18,161 @@ const TREATMENTS = [
 ];
 const HOURS = [['Lunes', '9 a.m. – 7 p.m.'], ['Martes', '9 a.m. – 7 p.m.'], ['Miércoles', '9 a.m. – 7 p.m.'], ['Jueves', '9 a.m. – 7 p.m.'], ['Viernes', '9 a.m. – 7 p.m.'], ['Sábado', '9 a.m. – 2 p.m.'], ['Domingo', null]];
 
-function Hero() {
+const TRUST = [['shield-check', 'Atención', 'médica'], ['heart-handshake', 'Trato', 'personalizado'], ['flask-conical', 'Farmacia', 'en clínica']];
+const MOBILE_HERO = '(max-width: 900px)';
+
+function useMediaQuery(query) {
+  const [matches, setMatches] = useState(() => window.matchMedia(query).matches);
+  useEffect(() => {
+    const mq = window.matchMedia(query);
+    const onChange = () => setMatches(mq.matches);
+    mq.addEventListener('change', onChange);
+    return () => mq.removeEventListener('change', onChange);
+  }, [query]);
+  return matches;
+}
+
+function Headline({ className, style }) {
+  return (
+    <h1 className={className} style={{ ...display, lineHeight: 0.9, letterSpacing: '-.015em', color: 'var(--summit-800)', ...style }}>
+      <span style={{ display: 'block' }}>Piel sana,</span>
+      <span style={{ display: 'flex', alignItems: 'center', gap: '.15em' }}>belleza
+        <svg aria-hidden="true" className="hero-swash" viewBox="0 0 96 34" fill="none"><path d="M6 8 Q48 40 90 8" stroke="var(--wd-summit)" strokeWidth="7" strokeLinecap="round" pathLength="1" /></svg>
+      </span>
+      <span style={{ display: 'block', fontStyle: 'italic', color: 'var(--wd-summit)' }}>natural.</span>
+    </h1>
+  );
+}
+
+function HeroActions({ style, showTreatments = true }) {
   const openBooking = useBooking();
-  const trust = [['shield-check', 'Atención', 'médica'], ['heart-handshake', 'Trato', 'personalizado'], ['flask-conical', 'Farmacia', 'en clínica']];
+  return (
+    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 14, ...style }}>
+      <Button onClick={() => openBooking()} size="lg" iconRight="arrow-right" className="btn-strong" style={{ height: 56, padding: '0 30px', fontSize: 15.5, letterSpacing: 'var(--ls-ui)' }}>Agenda tu cita</Button>
+      {showTreatments && <a href="#tratamientos" className="hero-ghost" style={{ display: 'inline-flex', alignItems: 'center', gap: 12, height: 56, padding: '0 26px 0 8px', borderRadius: 'var(--radius-pill)', background: 'rgba(255,255,255,.75)', border: '1px solid var(--sand-200)', color: 'var(--ink)', textDecoration: 'none', fontSize: 15.5, fontWeight: 600, letterSpacing: 'var(--ls-ui)' }}>
+        <span className="chip" style={{ width: 40, height: 40, borderRadius: 'var(--radius-pill)', background: 'var(--white)', boxShadow: 'var(--shadow-sm)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--summit-700)' }}><Icon name="arrow-right" size={16} strokeWidth={1.8} /></span>
+        Ver tratamientos
+      </a>}
+    </div>
+  );
+}
+
+function TrustList({ className, style, itemStyle }) {
+  return (
+    <ul className={className} style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexWrap: 'wrap', gap: '20px 32px', ...style }}>
+      {TRUST.map(([ic, a, b]) => (
+        <li key={ic} style={{ display: 'flex', alignItems: 'center', gap: 12, fontSize: 13, lineHeight: 1.3, color: 'var(--ink)', ...itemStyle }}>
+          <Icon name={ic} size={30} style={{ color: 'var(--summit-700)' }} /><span>{a}<br />{b}</span>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+function DesktopHero() {
   return (
     <section id="inicio" className="hero" aria-label="Bienvenida">
       <img className="hero-photo" src={IMG + 'pharmacy-shelves.jpg'} alt="Farmacia dermatológica de Well Derma con repisas iluminadas de dermocosméticos" fetchpriority="high" />
       <div className="hero-scrim" aria-hidden="true"></div>
       <div className="wrap hero-grid">
         <div style={{ position: 'relative', maxWidth: 620 }}>
-          <div data-reveal="0"><Eyebrow rule={false} color="var(--summit-600)" style={{ marginBottom: 'var(--hero-gap-s)' }}>Medicina estética · Santiago, N.L.</Eyebrow></div>
-          <h1 className="hero-h1" data-reveal="1" style={{ ...display, lineHeight: 0.9, letterSpacing: '-.015em', color: 'var(--summit-800)' }}>
-            <span style={{ display: 'block' }}>Piel sana,</span>
-            <span style={{ display: 'flex', alignItems: 'center', gap: '.15em' }}>belleza
-              <svg aria-hidden="true" className="hero-swash" viewBox="0 0 96 34" fill="none"><path d="M6 8 Q48 40 90 8" stroke="var(--wd-summit)" strokeWidth="7" strokeLinecap="round" pathLength="1" /></svg>
-            </span>
-            <span style={{ display: 'block', fontStyle: 'italic', color: 'var(--wd-summit)' }}>natural.</span>
-          </h1>
+          <div data-intro="0"><Eyebrow rule={false} color="var(--summit-600)" style={{ marginBottom: 'var(--hero-gap-s)' }}>Medicina estética · Santiago, N.L.</Eyebrow></div>
+          <div data-intro="1"><Headline className="hero-h1" /></div>
           <div className="hero-note" aria-hidden="true" style={{ fontFamily: 'var(--font-display)', fontStyle: 'italic', lineHeight: 1, color: 'var(--summit-600)', textAlign: 'center' }}>
             <div>Tu mejor</div><div>versión</div>
             <Glyph name="heart" size={22} strokeWidth={1.6} style={{ marginTop: 6, width: '.73em', height: '.73em' }} />
           </div>
-          <p data-reveal="2" className="hero-lead" style={{ maxWidth: 440, lineHeight: 1.55, color: 'var(--ink)' }}>Tratamientos estéticos no quirúrgicos y cuidado avanzado de la piel, con atención médica personalizada.</p>
-          <div data-reveal="3" style={{ display: 'flex', flexWrap: 'wrap', gap: 14, marginTop: 'var(--hero-gap-l)' }}>
-            <Button onClick={() => openBooking()} size="lg" iconRight="arrow-right" className="btn-strong" style={{ height: 56, padding: '0 30px', fontSize: 15.5, letterSpacing: 'var(--ls-ui)' }}>Agenda tu cita</Button>
-            <a href="#tratamientos" className="hero-ghost" style={{ display: 'inline-flex', alignItems: 'center', gap: 12, height: 56, padding: '0 26px 0 8px', borderRadius: 'var(--radius-pill)', background: 'rgba(255,255,255,.75)', border: '1px solid var(--sand-200)', color: 'var(--ink)', textDecoration: 'none', fontSize: 15.5, fontWeight: 600, letterSpacing: 'var(--ls-ui)' }}>
-              <span className="chip" style={{ width: 40, height: 40, borderRadius: 'var(--radius-pill)', background: 'var(--white)', boxShadow: 'var(--shadow-sm)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--summit-700)' }}><Icon name="arrow-right" size={16} strokeWidth={1.8} /></span>
-              Ver tratamientos
-            </a>
-          </div>
-          <ul data-reveal="4" className="trust" style={{ listStyle: 'none', margin: 'var(--hero-gap-xl) 0 0', padding: 0, display: 'flex', flexWrap: 'wrap', gap: '20px 32px' }}>
-            {trust.map(([ic, a, b]) => (
-              <li key={ic} style={{ display: 'flex', alignItems: 'center', gap: 12, fontSize: 13, lineHeight: 1.3, color: 'var(--ink)' }}>
-                <Icon name={ic} size={30} style={{ color: 'var(--summit-700)' }} /><span>{a}<br />{b}</span>
-              </li>
-            ))}
-          </ul>
+          <p data-intro="2" className="hero-lead" style={{ maxWidth: 440, lineHeight: 1.55, color: 'var(--ink)' }}>Tratamientos estéticos no quirúrgicos y cuidado avanzado de la piel, con atención médica personalizada.</p>
+          <div data-intro="3"><HeroActions style={{ marginTop: 'var(--hero-gap-l)' }} /></div>
+          <div data-intro="4"><TrustList className="trust" style={{ marginTop: 'var(--hero-gap-xl)' }} /></div>
         </div>
       </div>
     </section>
   );
+}
+
+// Phones and tablets: the hero is a three-scene story pinned under the header. Each scroll step
+// crossfades to the next scene (photo + message), then the page carries on as normal.
+const SCENES = [
+  { photo: 'pharmacy-shelves.jpg', pos: '62% 50%', alt: 'Farmacia dermatológica de Well Derma con repisas iluminadas de dermocosméticos' },
+  { photo: 'waiting-room.jpg', pos: '18% 50%', fade: 'top', alt: 'Sala de espera de Well Derma con el logotipo en latón y banca iluminada' },
+  { photo: 'consultory-room.jpg', pos: '58% 50%', alt: 'Consultorio de Well Derma' },
+];
+const SCENE_AT = [0, 0.4, 0.8]; // where each scene sits along the pinned scroll (0–1)
+
+function MobileHero() {
+  const ref = useRef(null);
+  const [scene, setScene] = useState(0);
+
+  // Pinned scroll distance and how far through it the visitor is (0–1).
+  const measure = () => {
+    const el = ref.current;
+    const travel = Math.max(el.offsetHeight - el.firstElementChild.offsetHeight, 1);
+    return { travel, progress: Math.min(1, Math.max(0, (el.firstElementChild.getBoundingClientRect().top - el.getBoundingClientRect().top) / travel)) };
+  };
+
+  useEffect(() => {
+    let frame = 0;
+    const update = () => {
+      frame = 0;
+      if (!ref.current) return;
+      const { progress } = measure();
+      setScene(progress < 0.2 ? 0 : progress < 0.6 ? 1 : 2);
+    };
+    const onScroll = () => { if (!frame) frame = requestAnimationFrame(update); };
+    update();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    return () => { window.removeEventListener('scroll', onScroll); window.removeEventListener('resize', onScroll); cancelAnimationFrame(frame); };
+  }, []);
+
+  const goTo = (i) => {
+    const el = ref.current;
+    const { travel } = measure();
+    // The stage pins once the section's top reaches the header (the stage's sticky `top`).
+    const pinAt = el.getBoundingClientRect().top + window.scrollY - parseFloat(getComputedStyle(el.firstElementChild).top);
+    window.scrollTo({ top: pinAt + SCENE_AT[i] * travel });
+  };
+  const state = (i) => (i === scene ? 'active' : i < scene ? 'past' : 'next');
+  // Keyboard users tabbing into a hidden scene are scrolled to it.
+  const copyProps = (i) => ({ className: 'story-copy', 'data-state': state(i), 'data-align': SCENES[i].fade, onFocusCapture: () => { if (i !== scene) goTo(i); } });
+
+  return (
+    <section id="inicio" ref={ref} className="story" aria-label="Bienvenida">
+      <div className="story-stage">
+        {SCENES.map((sc, i) => (
+          <div key={sc.photo} className="story-media" data-state={state(i)} data-fade={sc.fade} aria-hidden={i !== scene}>
+            <img src={IMG + sc.photo} alt={sc.alt} fetchpriority={i ? undefined : 'high'} style={{ objectPosition: sc.pos }} />
+          </div>
+        ))}
+
+        <div {...copyProps(0)}>
+          <Eyebrow rule={false} color="var(--summit-600)" style={{ marginBottom: 18 }}>Medicina estética · Santiago, N.L.</Eyebrow>
+          <Headline className="story-h1" />
+        </div>
+        <div {...copyProps(1)}>
+          <Eyebrow style={{ marginBottom: 18 }}>Nuestro cuidado</Eyebrow>
+          <p className="story-statement" style={{ ...display, maxWidth: 420 }}>Tratamientos estéticos no quirúrgicos y cuidado avanzado de la piel, <span style={em}>con atención médica personalizada.</span></p>
+        </div>
+        <div {...copyProps(2)}>
+          <h2 className="story-statement" style={{ ...display, marginBottom: 26 }}>Tu piel, <span style={em}>en buenas manos.</span></h2>
+          <HeroActions showTreatments={false} />
+          <TrustList style={{ marginTop: 30, flexDirection: 'column', gap: 16 }} itemStyle={{ fontSize: 14.5 }} />
+        </div>
+
+        <div className="story-dots">
+          {SCENES.map((_, i) => (
+            <button key={i} type="button" aria-label={'Ir al paso ' + (i + 1) + ' de ' + SCENES.length} aria-current={i === scene || undefined} onClick={() => goTo(i)}><span></span></button>
+          ))}
+        </div>
+        <p className="story-hint" data-hidden={scene > 0 || undefined} aria-hidden="true"><span>Desliza</span><Icon name="chevron-down" size={18} strokeWidth={1.6} /></p>
+      </div>
+    </section>
+  );
+}
+
+function Hero() {
+  return useMediaQuery(MOBILE_HERO) ? <MobileHero /> : <DesktopHero />;
 }
 
 function Treatments() {

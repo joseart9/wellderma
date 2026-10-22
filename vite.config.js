@@ -5,6 +5,8 @@ import react from '@vitejs/plugin-react';
 // Static multi-page site: each page is a folder with its own index.html, so URLs stay clean (/doctoras/, /galeria/).
 export default defineConfig({
   plugins: [react()],
+  // Native file events are missed for some edits on this Windows drive; polling keeps dev reloads reliable.
+  server: { watch: { usePolling: true, interval: 250 } },
   build: {
     rollupOptions: {
       input: {

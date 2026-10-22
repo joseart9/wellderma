@@ -22,6 +22,35 @@
 .hero-ghost .chip{transition:transform var(--dur-base) var(--ease-out)}
 .hero-ghost:hover .chip{transform:translateX(3px)}
 
+/* Phones and tablets (<=900px): three-scene hero pinned under the header while the visitor scrolls
+   through it. Each scene is a full-bleed photo faded to cream on the left with its message on top. */
+.story{position:relative;height:calc((100vh - var(--header-h)) * 3)}
+.story-stage{position:sticky;top:var(--header-h);height:calc(100vh - var(--header-h));overflow:hidden;background:var(--wd-fresh-cream)}
+@supports (height:1svh){.story{height:calc((100svh - var(--header-h)) * 3)}.story-stage{height:calc(100svh - var(--header-h))}}
+.story-media{position:absolute;inset:0;opacity:0;transform:translateX(-8%)}
+.story-media img{width:100%;height:100%;object-fit:cover;display:block}
+.story-media::after{content:"";position:absolute;inset:0;background:
+  linear-gradient(90deg,var(--wd-fresh-cream) 0%,rgba(252,249,241,.9) 24%,rgba(252,249,241,.45) 52%,rgba(252,249,241,0) 82%),
+  linear-gradient(0deg,var(--wd-fresh-cream) 0%,rgba(252,249,241,0) 24%)}
+/* Scenes whose photo has its subject low in the frame fade from the top and carry their text up there. */
+.story-media[data-fade="top"]::after{background:
+  linear-gradient(180deg,var(--wd-fresh-cream) 0%,rgba(252,249,241,.92) 28%,rgba(252,249,241,.25) 40%,rgba(252,249,241,0) 50%),
+  linear-gradient(0deg,var(--wd-fresh-cream) 0%,rgba(252,249,241,0) 18%)}
+.story-copy[data-align="top"]{justify-content:flex-start;padding-top:36px}
+.story-media[data-state="active"]{opacity:1;transform:none}
+.story-media[data-state="past"]{transform:translateY(-10%)}
+.story-copy{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;padding:0 52px 56px 20px;opacity:0;transform:translateX(-24px);pointer-events:none}
+.story-copy[data-state="active"]{opacity:1;transform:none;pointer-events:auto}
+.story-copy[data-state="past"]{transform:translateY(-28px)}
+.story-h1{font-size:clamp(54px,16vw,84px)}
+.story-statement{font-size:clamp(32px,9vw,46px);line-height:1.1}
+.story-dots{position:absolute;right:10px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;z-index:2}
+.story-dots button{width:32px;height:32px;padding:0;border:0;background:none;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.story-dots span{display:block;width:4px;height:8px;border-radius:var(--radius-pill);background:var(--summit-300);transition:height var(--dur-base) var(--ease-out),background var(--dur-base) var(--ease-out)}
+.story-dots [aria-current] span{height:24px;background:var(--summit-700)}
+.story-hint{position:absolute;left:0;right:0;bottom:18px;margin:0;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:11px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--summit-600);transition:opacity var(--dur-base) var(--ease-out)}
+.story-hint[data-hidden]{opacity:0}
+
 /* Section headings and spacing scale smoothly between phone and desktop instead of jumping at breakpoints. */
 .sec-treatments{padding:clamp(64px,7.2vw,104px) 0 clamp(44px,5vw,72px)}
 .h-xl{font-size:clamp(40px,3.9vw,56px)}
@@ -66,11 +95,6 @@
 .visit>.visit-bg{display:none}
 .visit-copy{order:-1}
 .visit-map{height:320px}
-.hero-photo{position:relative;width:100%;height:300px;display:block}
-.hero-scrim{display:none}
-.hero{--h1:clamp(46px,16vw,72px)}
-.hero-grid{min-height:0 !important;padding-top:40px !important;padding-bottom:56px !important}
-.hero-note{display:none}
 .split-card{grid-template-columns:minmax(0,1fr)}
 .split-media{min-height:0;height:280px;order:-1}
 .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
